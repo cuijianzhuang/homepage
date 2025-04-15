@@ -87,10 +87,16 @@ function initMatrixLoader() {
             redPill.classList.add('disabled');
             document.querySelector('.choice-text').style.opacity = '0.5';
             
+            // 使用蓝色主题的进度条
+            progressFill.style.background = 'linear-gradient(90deg, #0066ff, #0099ff)';
+            progressFill.style.boxShadow = '0 0 10px rgba(0, 102, 255, 0.5)';
+            
             setTimeout(() => {
-                // 如果用户选择蓝色药丸，重定向到其他页面或关闭网站
-                window.location.href = 'https://blog.cuijianzhuang.com/';
-            }, 1000);
+                startMatrixLoading(progressFill, function() {
+                    // 重定向到其他页面
+                    window.location.href = 'https://blog.cuijianzhuang.com/';
+                }, true);
+            }, 500);
         });
     } else {
         // 如果已访问过，直接隐藏加载器并显示终端
@@ -211,9 +217,15 @@ function createRainColumn(container, chars) {
 }
 
 // 进度条加载效果
-function startMatrixLoading(progressBar, callback) {
+function startMatrixLoading(progressBar, callback, isBlue = false) {
     let progress = 0;
-    const loadingSteps = [
+    const loadingSteps = isBlue ? [
+        "Preparing Exit Protocol...",
+        "Saving Current State...",
+        "Closing Neural Connections...",
+        "Initiating Safe Shutdown...",
+        "Redirecting to Reality..."
+    ] : [
         "Initializing Connection...",
         "Locating Entry Point...",
         "Bypassing Security Systems...",
@@ -243,7 +255,7 @@ function startMatrixLoading(progressBar, callback) {
         
         if (progress >= 100) {
             clearInterval(interval);
-            loadingText.textContent = "WELCOME TO THE MATRIX";
+            loadingText.textContent = isBlue ? "RETURNING TO REALITY" : "WELCOME TO THE MATRIX";
             loadingText.classList.add('glitch');
             
             setTimeout(() => {
