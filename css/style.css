@@ -672,12 +672,13 @@ body {
     transition-delay: 0.7s;
 }
 
-/* Contact Section */
+/* Contact Section Animation */
 .contact-options {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
     margin-top: 20px;
+    position: relative;
 }
 
 .contact-link {
@@ -688,14 +689,66 @@ body {
     padding: 10px;
     border: 1px solid var(--matrix-dark-green);
     border-radius: 5px;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: rgba(0, 20, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.contact-link:nth-child(1) {
+    animation: contactFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards 0.2s;
+}
+
+.contact-link:nth-child(2) {
+    animation: contactFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards 0.4s;
+}
+
+.contact-link:nth-child(3) {
+    animation: contactFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards 0.6s;
+}
+
+.contact-link:nth-child(4) {
+    animation: contactFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards 0.8s;
+}
+
+@keyframes contactFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.contact-link:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 255, 65, 0.2),
+        transparent
+    );
+    transition: left 0.5s ease;
 }
 
 .contact-link:hover {
     background: rgba(0, 143, 17, 0.2);
     transform: translateY(-3px);
-    box-shadow: 0 3px 10px rgba(0, 255, 65, 0.2);
+    box-shadow: 0 3px 15px rgba(0, 255, 65, 0.3);
+}
+
+.contact-link:hover:before {
+    left: 100%;
+    transition: left 0.8s ease;
 }
 
 .contact-icon {
@@ -708,10 +761,48 @@ body {
     justify-content: center;
     margin-right: 10px;
     font-size: 16px;
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-icon:after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+        circle,
+        rgba(0, 255, 65, 0.2) 0%,
+        transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.contact-link:hover .contact-icon:after {
+    opacity: 1;
+    animation: iconGlow 1.5s ease infinite;
+}
+
+@keyframes iconGlow {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .contact-text {
     font-size: 16px;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.contact-link:hover .contact-text {
+    transform: translateX(5px);
 }
 
 /* Responsive Design */
@@ -1410,4 +1501,78 @@ body {
 
 .aplayer .aplayer-list::-webkit-scrollbar-thumb {
     background: var(--matrix-dark-green);
+}
+
+/* 回到顶部按钮样式 */
+.scroll-top {
+    position: fixed;
+    bottom: -60px; /* 初始状态隐藏 */
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    background: rgba(0, 20, 0, 0.8);
+    border: 1px solid var(--matrix-green);
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    z-index: 1000;
+}
+
+.scroll-top.visible {
+    bottom: 20px;
+    opacity: 1;
+}
+
+.scroll-top:before {
+    content: '↑';
+    color: var(--matrix-green);
+    font-size: 24px;
+    text-shadow: 0 0 5px var(--matrix-green);
+}
+
+.scroll-top:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+    background: rgba(0, 40, 0, 0.9);
+}
+
+.scroll-top:hover:before {
+    animation: arrowBlink 1s infinite;
+}
+
+@keyframes arrowBlink {
+    0%, 100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateY(-3px);
+    }
+}
+
+.scroll-top:after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 5px;
+    background: linear-gradient(45deg, 
+        transparent 0%,
+        rgba(0, 255, 65, 0.2) 50%,
+        transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.scroll-top:hover:after {
+    opacity: 1;
+    animation: borderRotate 2s linear infinite;
 }

@@ -20,41 +20,19 @@ function initializeContent() {
             const identitySection = document.getElementById('identity-section');
             identitySection.classList.remove('hidden');
             
+            // 滚动到身份部分
+            smoothScrollToElement(identitySection);
+            
             // 触发个人资料动画
             setTimeout(() => {
                 const profileImage = identitySection.querySelector('.profile-image');
                 const identityInfo = identitySection.querySelector('.identity-info');
                 
-                // 添加动画类
                 profileImage.classList.add('animate');
                 identityInfo.classList.add('animate');
                 
                 // 添加矩阵扫描线效果
-                const scanLine = document.createElement('div');
-                scanLine.style.cssText = `
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 2px;
-                    background: var(--matrix-green);
-                    opacity: 0.5;
-                    z-index: 1;
-                    box-shadow: 0 0 10px var(--matrix-green);
-                `;
-                identitySection.querySelector('.identity-content').appendChild(scanLine);
-                
-                // 动画扫描线
-                let position = 0;
-                const scanInterval = setInterval(() => {
-                    position += 2;
-                    scanLine.style.top = position + 'px';
-                    
-                    if (position > identitySection.querySelector('.identity-content').offsetHeight) {
-                        clearInterval(scanInterval);
-                        scanLine.remove();
-                    }
-                }, 10);
+                addScanLineEffect(identitySection);
             }, 300);
         }, 500);
     });
@@ -64,6 +42,10 @@ function initializeContent() {
             setTimeout(() => {
                 const skillsSection = document.getElementById('skills-section');
                 skillsSection.classList.remove('hidden');
+                
+                // 滚动到技能部分
+                smoothScrollToElement(skillsSection);
+                
                 // 触发技能卡片动画
                 const skillCategories = skillsSection.querySelectorAll('.skill-category');
                 skillCategories.forEach((category, index) => {
@@ -81,6 +63,10 @@ function initializeContent() {
             setTimeout(() => {
                 const projectsSection = document.getElementById('projects-section');
                 projectsSection.classList.remove('hidden');
+                
+                // 滚动到项目部分
+                smoothScrollToElement(projectsSection);
+                
                 // 触发项目卡片动画
                 const projectCards = projectsSection.querySelectorAll('.project-card');
                 projectCards.forEach((card, index) => {
@@ -95,7 +81,16 @@ function initializeContent() {
     setTimeout(() => {
         typeText('#contact-intro', 'Establishing secure communication channels... Encrypting connections...', 60, function() {
             setTimeout(() => {
-                document.getElementById('contact-section').classList.remove('hidden');
+                const contactSection = document.getElementById('contact-section');
+                contactSection.classList.remove('hidden');
+                
+                // 滚动到联系方式部分
+                smoothScrollToElement(contactSection);
+
+                // 等待所有内容加载完成后，延迟3秒回到顶部
+                setTimeout(() => {
+                    smoothScrollToTop();
+                }, 3000);
             }, 500);
         });
     }, 7500);
@@ -480,6 +475,8 @@ function typeText(selector, text, speed, callback) {
         if (i < text.length) {
             element.innerHTML += text.charAt(i);
             i++;
+            // 自动滚动到正在输入的文本
+            element.scrollIntoView({ behavior: 'smooth', block: 'end' });
             setTimeout(typing, speed);
         } else if (callback) {
             callback();
@@ -755,4 +752,81 @@ document.querySelectorAll('.section-header').forEach(header => {
             }, 300);
         }
     });
-}); 
+});
+
+// 添加平滑滚动函数
+function smoothScrollToElement(element) {
+    const terminalContent = document.querySelector('.terminal-content');
+    const elementRect = element.getBoundingClientRect();
+    const terminalRect = terminalContent.getBoundingClientRect();
+    
+    // 计算需要滚动的距离
+    const scrollTarget = terminalContent.scrollTop + (elementRect.top - terminalRect.top) - 50; // 50px的偏移量，让内容显示得更完整
+    
+    // 使用平滑滚动
+    terminalContent.scrollTo({
+        top: scrollTarget,
+        behavior: 'smooth'
+    });
+}
+
+// 添加扫描线效果
+function addScanLineEffect(section) {
+    const scanLine = document.createElement('div');
+    scanLine.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--matrix-green);
+        opacity: 0.5;
+        z-index: 1;
+        box-shadow: 0 0 10px var(--matrix-green);
+    `;
+    
+    if (section.querySelector('.identity-content')) {
+        section.querySelector('.identity-content').appendChild(scanLine);
+        
+        // 动画扫描线
+        let position = 0;
+        const scanInterval = setInterval(() => {
+            position += 2;
+            scanLine.style.top = position + 'px';
+            
+            if (position > section.querySelector('.identity-content').offsetHeight) {
+                clearInterval(scanInterval);
+                scanLine.remove();
+            }
+        }, 10);
+    }
+}
+
+// 添加回到顶部功能
+document.addEventListener('DOMContentLoaded', function() {
+    const scrollTopButton = document.getElementById('scrollTop');
+    const terminalContent = document.querySelector('.terminal-content');
+
+    // 监听滚动事件
+    terminalContent.addEventListener('scroll', function() {
+        if (terminalContent.scrollTop > 300) {
+            scrollTopButton.classList.add('visible');
+        } else {
+            scrollTopButton.classList.remove('visible');
+        }
+    });
+
+    // 点击回到顶部
+    scrollTopButton.addEventListener('click', function() {
+        smoothScrollToTop();
+    });
+});
+
+// 平滑滚动到顶部
+function smoothScrollToTop() {
+    const terminalContent = document.querySelector('.terminal-content');
+    terminalContent.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+} 
