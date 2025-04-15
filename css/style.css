@@ -1,0 +1,771 @@
+/* Matrix Theme - Main Styles */
+:root {
+    --matrix-green: #00ff41;
+    --matrix-dark-green: #008f11;
+    --matrix-black: #0d0208;
+    --terminal-bg: rgba(5, 13, 8, 0.9);
+    --terminal-header: #1a1a1a;
+    --text-color: #d2ded1;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'VT323', monospace;
+}
+
+body {
+    background-color: var(--matrix-black);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Matrix Background Animation */
+.matrix-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-color: var(--matrix-black);
+    overflow: hidden;
+}
+
+.matrix-background::before {
+    content: "";
+    position: absolute;
+    top: -100px;
+    left: 0;
+    width: 100%;
+    height: calc(100% + 100px);
+    background: repeating-linear-gradient(0deg, 
+        rgba(0, 0, 0, 0) 0, 
+        rgba(0, 0, 0, 0) 40px, 
+        var(--matrix-green) 40px, 
+        var(--matrix-green) 40.5px
+    );
+    animation: matrix-rain 22s linear infinite;
+    opacity: 0.1;
+}
+
+@keyframes matrix-rain {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(100px);
+    }
+}
+
+/* Terminal Styling */
+.terminal {
+    width: 100%;
+    max-width: 1000px;
+    background-color: var(--terminal-bg);
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
+    overflow: hidden;
+    border: 1px solid var(--matrix-dark-green);
+    animation: terminal-glow 4s ease-in-out infinite alternate;
+}
+
+@keyframes terminal-glow {
+    0% {
+        box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
+    }
+}
+
+.terminal-header {
+    background-color: var(--terminal-header);
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--matrix-dark-green);
+}
+
+.terminal-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.terminal-buttons span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #555;
+}
+
+.terminal-buttons span:nth-child(1) {
+    background-color: #ff5f56;
+}
+
+.terminal-buttons span:nth-child(2) {
+    background-color: #ffbd2e;
+}
+
+.terminal-buttons span:nth-child(3) {
+    background-color: #27c93f;
+}
+
+.terminal-title {
+    margin-left: auto;
+    color: var(--text-color);
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.terminal-content {
+    padding: 20px;
+    min-height: 60vh;
+    max-height: 80vh;
+    overflow-y: auto;
+    line-height: 1.5;
+    font-size: 18px;
+}
+
+.terminal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.terminal-content::-webkit-scrollbar-track {
+    background: var(--matrix-black);
+}
+
+.terminal-content::-webkit-scrollbar-thumb {
+    background: var(--matrix-dark-green);
+    border-radius: 4px;
+}
+
+/* Terminal Prompts and Text */
+.prompt {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+}
+
+.user {
+    color: var(--matrix-green);
+    font-weight: bold;
+}
+
+.directory {
+    color: #3498db;
+}
+
+.command {
+    margin-left: 8px;
+    color: var(--text-color);
+}
+
+.typing-text {
+    min-height: 20px;
+}
+
+.blinking-cursor {
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+.green {
+    color: var(--matrix-green);
+}
+
+.command-response {
+    margin: 15px 0;
+    padding-left: 25px;
+    border-left: 2px solid var(--matrix-dark-green);
+}
+
+.section-header {
+    font-size: 20px;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    position: relative;
+}
+
+.section-header:after {
+    content: '+';
+    position: absolute;
+    right: 10px;
+    transition: transform 0.3s ease;
+}
+
+.section-header.active:after {
+    transform: rotate(45deg);
+}
+
+.matrix-transition {
+    position: relative;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.matrix-transition:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(0,255,0,0.1) 0%, transparent 100%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.matrix-transition.active:before {
+    opacity: 1;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Identity Section */
+.identity-content {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-top: 15px;
+}
+
+.profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 5px;
+    border: 2px solid var(--matrix-dark-green);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+    object-fit: cover;
+}
+
+.identity-info h1 {
+    font-size: 32px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    color: var(--matrix-green);
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
+}
+
+.role {
+    font-size: 16px;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.matrix-quote {
+    font-style: italic;
+    opacity: 0.8;
+    border-left: 3px solid var(--matrix-dark-green);
+    padding-left: 10px;
+    margin-top: 15px;
+}
+
+/* Skills Section */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.skill-category h3 {
+    color: var(--matrix-green);
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+    text-decoration: underline;
+    text-decoration-color: var(--matrix-dark-green);
+}
+
+.skills-list {
+    list-style: none;
+}
+
+.skills-list li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.skill-name {
+    flex: 0 0 100px;
+}
+
+.skill-bar {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    margin-left: 15px;
+}
+
+.skill-bar span {
+    position: absolute;
+    height: 100%;
+    background: var(--matrix-green);
+    background: linear-gradient(90deg, var(--matrix-dark-green) 0%, var(--matrix-green) 100%);
+    border-radius: 4px;
+    transition: width 1s ease-in-out;
+}
+
+/* Projects Section */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.project-card {
+    border: 1px solid var(--matrix-dark-green);
+    border-radius: 5px;
+    padding: 15px;
+    background: rgba(0, 20, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 255, 65, 0.2);
+    background: rgba(0, 30, 0, 0.3);
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.project-header h3 {
+    color: var(--matrix-green);
+    letter-spacing: 1px;
+}
+
+.project-type {
+    font-size: 12px;
+    background: var(--matrix-dark-green);
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+
+.project-desc {
+    margin: 10px 0;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.project-tech span {
+    font-size: 14px;
+    background: rgba(0, 143, 17, 0.3);
+    padding: 2px 8px;
+    border-radius: 3px;
+    border: 1px solid var(--matrix-dark-green);
+}
+
+/* Contact Section */
+.contact-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.contact-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-color);
+    padding: 10px;
+    border: 1px solid var(--matrix-dark-green);
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    background: rgba(0, 20, 0, 0.2);
+}
+
+.contact-link:hover {
+    background: rgba(0, 143, 17, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 3px 10px rgba(0, 255, 65, 0.2);
+}
+
+.contact-icon {
+    width: 30px;
+    height: 30px;
+    background: var(--matrix-dark-green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.contact-text {
+    font-size: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .terminal {
+        max-width: 95%;
+    }
+    
+    .identity-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .skills-grid, .projects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .terminal-content {
+        font-size: 16px;
+    }
+}
+
+/* 防止文本被选中 */
+body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* 矩阵入口加载动画 */
+.matrix-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0d0208;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+}
+
+.matrix-loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.matrix-code-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+.matrix-message {
+    position: relative;
+    z-index: 10001;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.loading-text {
+    color: #00ff41;
+    font-size: 1.8rem;
+    margin: 20px 0;
+    letter-spacing: 2px;
+    animation: pulse 1.5s infinite;
+}
+
+.loading-pills {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.pill {
+    width: 120px;
+    height: 60px;
+    margin: 0 20px;
+    border-radius: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transform: scale(1);
+    transition: all 0.3s ease;
+    text-shadow: 0 0 10px currentColor;
+    box-shadow: 0 0 15px currentColor;
+}
+
+.pill:hover {
+    transform: scale(1.1);
+}
+
+.red-pill {
+    border: 2px solid #ff0033;
+    color: #ff0033;
+    background-color: rgba(255, 0, 51, 0.1);
+}
+
+.blue-pill {
+    border: 2px solid #0066ff;
+    color: #0066ff;
+    background-color: rgba(0, 102, 255, 0.1);
+}
+
+.progress-bar {
+    width: 300px;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    margin-top: 30px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #00ff41;
+    width: 0%;
+    border-radius: 3px;
+    transition: width 0.1s linear;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.glitch {
+    position: relative;
+    animation: glitch 1s infinite;
+}
+
+@keyframes glitch {
+    0% {
+        transform: translate(0);
+    }
+    20% {
+        transform: translate(-2px, 2px);
+    }
+    40% {
+        transform: translate(-2px, -2px);
+    }
+    60% {
+        transform: translate(2px, 2px);
+    }
+    80% {
+        transform: translate(2px, -2px);
+    }
+    100% {
+        transform: translate(0);
+    }
+}
+
+.terminal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+.terminal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 技能条点击效果 */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pulse {
+    animation: pulse 1s ease;
+}
+
+/* 帮助模态框样式 */
+.help-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.help-modal .modal-content {
+    background: #000;
+    border: 2px solid #0f0;
+    padding: 20px;
+    border-radius: 5px;
+    color: #0f0;
+    font-family: 'Courier New', monospace;
+    max-width: 500px;
+}
+
+.help-modal h2 {
+    margin-top: 0;
+    color: #0f0;
+}
+
+.help-modal ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.help-modal li {
+    margin: 10px 0;
+    padding-left: 20px;
+    position: relative;
+}
+
+.help-modal li:before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: #0f0;
+}
+
+/* 终端主题切换 */
+.terminal.light-theme {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.terminal.light-theme .cursor {
+    background: #333;
+}
+
+/* 折叠和展开样式 */
+.collapsible {
+    position: relative;
+    cursor: pointer;
+    padding: 10px;
+    background: rgba(0, 20, 0, 0.2);
+    border: 1px solid var(--matrix-dark-green);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.collapsible:hover {
+    background: rgba(0, 40, 0, 0.3);
+}
+
+.collapsible:after {
+    content: '+';
+    position: absolute;
+    right: 15px;
+    transition: transform 0.3s ease, color 0.3s ease;
+    color: var(--matrix-green);
+}
+
+.collapsible.active:after {
+    transform: rotate(45deg);
+}
+
+.collapsible-content {
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease, transform 0.3s ease;
+    background: rgba(0, 20, 0, 0.1);
+    border-left: 2px solid var(--matrix-dark-green);
+    margin-left: 10px;
+    padding-left: 15px;
+}
+
+/* 矩阵风格过渡效果 */
+.matrix-glitch-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, 
+        rgba(0, 255, 65, 0.2) 0%,
+        transparent 20%,
+        transparent 80%,
+        rgba(0, 255, 65, 0.2) 100%
+    );
+    pointer-events: none;
+    opacity: 0;
+    animation: matrix-glitch 0.3s ease forwards;
+}
+
+@keyframes matrix-glitch {
+    0% {
+        opacity: 0;
+        transform: scaleY(0);
+    }
+    50% {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scaleY(1);
+    }
+}
+
+/* 展开/折叠时的内容动画 */
+.collapsible-content {
+    position: relative;
+    transform-origin: top;
+}
+
+.collapsible-content.active {
+    animation: expand 0.3s ease forwards;
+}
+
+@keyframes expand {
+    0% {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+    100% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}

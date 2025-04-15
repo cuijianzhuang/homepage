@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Matrix - Personal Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+</head>
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+    <!-- 矩阵入口加载动画 -->
+    <div class="matrix-loader" id="matrixLoader">
+        <div class="matrix-code-container" id="matrixCodeContainer"></div>
+        <div class="matrix-message">
+            <h1 class="loading-text glitch" data-text="ENTERING THE MATRIX">ENTERING THE MATRIX</h1>
+            <div class="loading-pills">
+                <div class="pill red-pill" id="redPill">RED PILL</div>
+                <div class="pill blue-pill" id="bluePill">BLUE PILL</div>
+            </div>
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="matrix-background"></div>
+    
+    <div class="terminal" id="terminal">
+        <div class="terminal-header">
+            <div class="terminal-buttons">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="terminal-title">matrix@localhost:~</div>
+        </div>
+        <div class="terminal-content">
+            <div class="prompt">
+                <span class="user">root@matrix</span>:<span class="directory">~</span>$ <span class="command">access_identity.sh</span>
+            </div>
+            
+            <div class="typing-text" id="intro-text"></div>
+
+            <div class="command-response hidden" id="identity-section">
+                <div class="section-header">
+                    <span class="green">[IDENTITY FILE]</span>
+                </div>
+                <div class="identity-content">
+                    <img src="images/profile.jpg" alt="Profile Image" class="profile-image">
+                    <div class="identity-info">
+                        <h1>JOHN DOE</h1>
+                        <p class="role">WEB DEVELOPER // SECURITY SPECIALIST // DIGITAL ARCHITECT</p>
+                        <p class="matrix-quote">"There is no spoon."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prompt">
+                <span class="user">root@matrix</span>:<span class="directory">~</span>$ <span class="command">run skills.exe</span>
+            </div>
+            
+            <div class="typing-text" id="skills-intro"></div>
+
+            <div class="command-response hidden" id="skills-section">
+                <div class="section-header">
+                    <span class="green">[SKILLS ANALYSIS]</span>
+                </div>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h3>PROGRAMMING</h3>
+                        <ul class="skills-list">
+                            <li><span class="skill-name">Java</span> <span class="skill-bar"><span style="width: 90%"></span></span></li>
+                            <li><span class="skill-name">Python</span> <span class="skill-bar"><span style="width: 85%"></span></span></li>
+                            <li><span class="skill-name">JavaScript</span> <span class="skill-bar"><span style="width: 75%"></span></span></li>
+<!--                            <li><span class="skill-name">C++</span> <span class="skill-bar"><span style="width: 70%"></span></span></li>-->
+                        </ul>
+                    </div>
+                    <div class="skill-category">
+                        <h3>WEB DEVELOPMENT</h3>
+                        <ul class="skills-list">
+                            <li><span class="skill-name">HTML/CSS</span> <span class="skill-bar"><span style="width: 95%"></span></span></li>
+                            <li><span class="skill-name">React</span> <span class="skill-bar"><span style="width: 88%"></span></span></li>
+                            <li><span class="skill-name">Node.js</span> <span class="skill-bar"><span style="width: 82%"></span></span></li>
+<!--                            <li><span class="skill-name">GraphQL</span> <span class="skill-bar"><span style="width: 78%"></span></span></li>-->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prompt">
+                <span class="user">root@matrix</span>:<span class="directory">~</span>$ <span class="command">cat hobbies.dat</span>
+            </div>
+            
+            <div class="typing-text" id="projects-intro"></div>
+
+            <div class="command-response hidden" id="projects-section">
+                <div class="section-header">
+                    <span class="green">[PERSONAL INTERESTS]</span>
+                </div>
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <div class="project-header">
+                            <h3>CYBERPUNK LITERATURE</h3>
+                            <span class="project-type">READING</span>
+                        </div>
+                        <p class="project-desc">Exploring dystopian futures through works of Gibson, Stephenson, and Dick. Fascinated by the intersection of technology and humanity.</p>
+                        <div class="project-tech">
+                            <span>Neuromancer</span>
+                            <span>Snow Crash</span>
+                            <span>Do Androids Dream</span>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-header">
+                            <h3>DIGITAL PHOTOGRAPHY</h3>
+                            <span class="project-type">VISUAL ARTS</span>
+                        </div>
+                        <p class="project-desc">Capturing urban landscapes and neon-lit streets. Specializing in night photography with a focus on cyberpunk aesthetics.</p>
+                        <div class="project-tech">
+                            <span>Urban</span>
+                            <span>Night</span>
+                            <span>Neon</span>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-header">
+                            <h3>ELECTRONIC MUSIC</h3>
+                            <span class="project-type">AUDIO CREATION</span>
+                        </div>
+                        <p class="project-desc">Producing ambient and synthwave tracks inspired by dystopian soundscapes and classic sci-fi film scores.</p>
+                        <div class="project-tech">
+                            <span>Synthwave</span>
+                            <span>Ambient</span>
+                            <span>Modular Synths</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prompt">
+                <span class="user">root@matrix</span>:<span class="directory">~</span>$ <span class="command">contact --init</span>
+            </div>
+            
+            <div class="typing-text" id="contact-intro"></div>
+
+            <div class="command-response hidden" id="contact-section">
+                <div class="section-header">
+                    <span class="green">[SECURE COMMUNICATION CHANNELS]</span>
+                </div>
+                <div class="contact-options">
+                    <a href="mailto:admin@cuijianzhuang.com" class="contact-link">
+                        <span class="contact-icon">@</span>
+                        <span class="contact-text">admin@cuijianzhuang.com</span>
+                    </a>
+                    <a href="https://github.com/cuijianzhuang" class="contact-link">
+                        <span class="contact-icon">&lt;/&gt;</span>
+                        <span class="contact-text">github.com/cuijianzhuang</span>
+                    </a>
+                    <a href="https://t.me/cuiplus" class="contact-link">
+                        <span class="contact-icon">✈</span>
+                        <span class="contact-text">t.me/cuiplus</span>
+                    </a>
+                    <a href="tel:+19716000939" class="contact-link">
+                        <span class="contact-icon">☎</span>
+                        <span class="contact-text">+1 (971) 600-0939</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="prompt">
+                <span class="user">root@matrix</span>:<span class="directory">~</span>$ <span class="blinking-cursor">|</span>
+            </div>
+        </div>
+    </div>
+
+    <noscript>
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; color: #00ff41; display: flex; justify-content: center; align-items: center; z-index: 9999; font-family: monospace; font-size: 18px; text-align: center; padding: 20px;">
+            <p>JavaScript is required to access the Matrix.<br>Enable JavaScript to continue.</p>
+        </div>
+    </noscript>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
