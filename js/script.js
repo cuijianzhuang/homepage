@@ -52,27 +52,45 @@ function initMatrixLoader() {
         const redPill = document.getElementById('redPill');
         const bluePill = document.getElementById('bluePill');
         const progressFill = document.getElementById('progressFill');
+        const progressBar = document.getElementById('progressBar');
         const matrixCodeContainer = document.getElementById('matrixCodeContainer');
         
         // 使用相同的数字雨效果
         createMatrixRainForLoader(matrixCodeContainer);
         
+        // 隐藏进度条
+        progressBar.classList.remove('active');
+        
         // 红蓝药丸效果
         redPill.addEventListener('click', function() {
-            startMatrixLoading(progressFill, function() {
-                matrixLoader.classList.add('hidden');
-                setTimeout(() => {
-                    terminal.classList.add('visible');
-                }, 500);
-                
-                // 设置会话存储，以便刷新页面时不再显示
-                sessionStorage.setItem('matrixEntered', 'true');
-            });
+            // 添加选中效果
+            redPill.classList.add('selected');
+            bluePill.classList.add('disabled');
+            document.querySelector('.choice-text').style.opacity = '0.5';
+            
+            setTimeout(() => {
+                startMatrixLoading(progressFill, function() {
+                    matrixLoader.classList.add('hidden');
+                    setTimeout(() => {
+                        terminal.classList.add('visible');
+                    }, 500);
+                    
+                    // 设置会话存储，以便刷新页面时不再显示
+                    sessionStorage.setItem('matrixEntered', 'true');
+                });
+            }, 500);
         });
         
         bluePill.addEventListener('click', function() {
-            // 如果用户选择蓝色药丸，重定向到其他页面或关闭网站
-            window.location.href = 'https://blog.cuijianzhuang.com/';
+            // 添加选中效果
+            bluePill.classList.add('selected');
+            redPill.classList.add('disabled');
+            document.querySelector('.choice-text').style.opacity = '0.5';
+            
+            setTimeout(() => {
+                // 如果用户选择蓝色药丸，重定向到其他页面或关闭网站
+                window.location.href = 'https://blog.cuijianzhuang.com/';
+            }, 1000);
         });
     } else {
         // 如果已访问过，直接隐藏加载器并显示终端
@@ -206,6 +224,9 @@ function startMatrixLoading(progressBar, callback) {
     // 修改加载文本
     const loadingText = document.querySelector('.loading-text');
     let currentStep = 0;
+    
+    // 显示进度条
+    progressBar.parentElement.classList.add('active');
     
     loadingText.textContent = loadingSteps[currentStep];
     loadingText.classList.remove('glitch');

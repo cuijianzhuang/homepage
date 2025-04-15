@@ -548,6 +548,7 @@ body {
     background-color: rgba(0, 102, 255, 0.1);
 }
 
+/* 进度条容器样式 */
 .progress-bar {
     width: 400px;
     height: 6px;
@@ -556,6 +557,14 @@ body {
     margin: 40px auto;
     overflow: hidden;
     position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.progress-bar.active {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .progress-fill {
@@ -881,5 +890,62 @@ body {
     }
     100% {
         transform: rotate(360deg);
+    }
+}
+
+/* 药丸选中状态 */
+.pill.selected {
+    transform: scale(1.1);
+    animation: pillSelected 0.5s ease forwards;
+}
+
+.red-pill.selected {
+    box-shadow: 0 0 40px rgba(255, 0, 51, 0.6);
+    border-width: 3px;
+}
+
+.blue-pill.selected {
+    box-shadow: 0 0 40px rgba(0, 102, 255, 0.6);
+    border-width: 3px;
+}
+
+/* 药丸禁用状态 */
+.pill.disabled {
+    opacity: 0.3;
+    transform: scale(0.95);
+    cursor: not-allowed;
+    filter: grayscale(70%);
+    transition: all 0.3s ease;
+}
+
+.pill.disabled:hover {
+    transform: scale(0.95);
+    box-shadow: none;
+}
+
+@keyframes pillSelected {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+    100% {
+        transform: scale(1.1);
+    }
+}
+
+/* 增强选中药丸的发光效果 */
+.pill.selected:before {
+    opacity: 0.8;
+    animation: borderRotate 2s linear infinite, glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.4;
     }
 }
