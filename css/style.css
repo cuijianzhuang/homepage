@@ -949,3 +949,183 @@ body {
         opacity: 0.4;
     }
 }
+
+/* Matrix-themed APlayer Styles */
+.aplayer {
+    background-color: var(--terminal-bg) !important;
+    color: var(--matrix-green) !important;
+    border: 1px solid var(--matrix-dark-green) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.3) !important;
+    font-family: 'VT323', monospace !important;
+    animation: terminal-glow 4s ease-in-out infinite alternate;
+}
+
+.aplayer .aplayer-info {
+    border-bottom: 1px solid var(--matrix-dark-green) !important;
+}
+
+.aplayer .aplayer-info .aplayer-music .aplayer-title,
+.aplayer .aplayer-info .aplayer-music .aplayer-author {
+    color: var(--matrix-green) !important;
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+}
+
+.aplayer .aplayer-lrc:before,
+.aplayer .aplayer-lrc:after {
+    background: linear-gradient(to bottom, var(--terminal-bg) 0%, rgba(0, 0, 0, 0) 100%) !important;
+}
+
+.aplayer .aplayer-list ol li {
+    border-top: 1px solid var(--matrix-dark-green) !important;
+}
+
+.aplayer .aplayer-list ol li:hover {
+    background-color: rgba(0, 143, 17, 0.2) !important;
+}
+
+.aplayer .aplayer-list ol li.aplayer-list-light {
+    background-color: rgba(0, 143, 17, 0.3) !important;
+}
+
+.aplayer .aplayer-list ol li .aplayer-list-index,
+.aplayer .aplayer-list ol li .aplayer-list-title,
+.aplayer .aplayer-list ol li .aplayer-list-author {
+    color: var(--text-color) !important;
+}
+
+.aplayer .aplayer-list ol li.aplayer-list-light .aplayer-list-title,
+.aplayer .aplayer-list ol li.aplayer-list-light .aplayer-list-author {
+    color: var(--matrix-green) !important;
+}
+
+.aplayer .aplayer-lrc p {
+    color: var(--text-color) !important;
+}
+
+.aplayer .aplayer-lrc p.aplayer-lrc-current {
+    color: var(--matrix-green) !important;
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+}
+
+/* Control Bar */
+.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar {
+    background-color: rgba(0, 143, 17, 0.2) !important;
+}
+
+.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar .aplayer-loaded {
+    background-color: rgba(0, 143, 17, 0.4) !important;
+}
+
+.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar .aplayer-played {
+    background-color: var(--matrix-green) !important;
+}
+
+.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar .aplayer-played .aplayer-thumb {
+    background-color: var(--matrix-green) !important;
+    box-shadow: 0 0 5px var(--matrix-green) !important;
+}
+
+/* Buttons */
+.aplayer .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon path {
+    fill: var(--matrix-dark-green) !important;
+}
+
+.aplayer .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon:hover path {
+    fill: var(--matrix-green) !important;
+}
+
+.aplayer .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon.aplayer-icon-loop.aplayer-icon-loop-on path,
+.aplayer .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon.aplayer-icon-menu.aplayer-icon-menu-on path,
+.aplayer .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon.aplayer-icon-lrc.aplayer-icon-lrc-on path,
+.aplayer .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon.aplayer-icon-volume-up path {
+    fill: var(--matrix-green) !important;
+}
+
+.aplayer .aplayer-info .aplayer-controller .aplayer-time {
+    color: var(--text-color) !important;
+}
+
+/* Mini Mode */
+.aplayer.aplayer-withlrc.aplayer-narrow .aplayer-body,
+.aplayer.aplayer-fixed .aplayer-body {
+    background-color: var(--terminal-bg) !important;
+    border: 1px solid var(--matrix-dark-green) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-list {
+    border-color: var(--matrix-dark-green) !important;
+    background-color: var(--terminal-bg) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-body {
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.3) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-miniswitcher {
+    background-color: var(--terminal-bg) !important;
+    border-left: 1px solid var(--matrix-dark-green) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-miniswitcher .aplayer-icon path {
+    fill: var(--matrix-dark-green) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-miniswitcher:hover {
+    background-color: rgba(0, 143, 17, 0.2) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-miniswitcher:hover .aplayer-icon path {
+    fill: var(--matrix-green) !important;
+}
+
+/* Volume Bar */
+.aplayer .aplayer-volume-bar-wrap .aplayer-volume-bar {
+    background-color: rgba(0, 143, 17, 0.2) !important;
+}
+
+.aplayer .aplayer-volume-bar-wrap .aplayer-volume-bar .aplayer-volume {
+    background-color: var(--matrix-green) !important;
+}
+
+/* Adding Matrix code rain behind the player when expanded */
+.aplayer.aplayer-withlist.aplayer-expanded {
+    position: relative;
+    overflow: hidden;
+}
+
+.aplayer.aplayer-withlist.aplayer-expanded:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(0deg, 
+        rgba(0, 0, 0, 0) 0, 
+        rgba(0, 0, 0, 0) 40px, 
+        var(--matrix-green) 40px, 
+        var(--matrix-green) 40.5px
+    );
+    animation: matrix-rain 22s linear infinite;
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Animate playing song with glitch effect */
+.aplayer .aplayer-info .aplayer-music .aplayer-title:not(:hover) {
+    animation: glitch 3s infinite alternate;
+}
+
+/* Hide scrollbar in list but keep functionality */
+.aplayer .aplayer-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.aplayer .aplayer-list::-webkit-scrollbar-track {
+    background: var(--matrix-black);
+}
+
+.aplayer .aplayer-list::-webkit-scrollbar-thumb {
+    background: var(--matrix-dark-green);
+}
