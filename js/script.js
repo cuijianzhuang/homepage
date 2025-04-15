@@ -10,18 +10,67 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Matrix digital rain background effect
     createMatrixRain();
-    
+});
+
+// 初始化所有动画和内容
+function initializeContent() {
     // Typing effect for sections
     typeText('#intro-text', 'Accessing identity file... Decryption in progress...', 60, function() {
         setTimeout(() => {
-            document.getElementById('identity-section').classList.remove('hidden');
+            const identitySection = document.getElementById('identity-section');
+            identitySection.classList.remove('hidden');
+            
+            // 触发个人资料动画
+            setTimeout(() => {
+                const profileImage = identitySection.querySelector('.profile-image');
+                const identityInfo = identitySection.querySelector('.identity-info');
+                
+                // 添加动画类
+                profileImage.classList.add('animate');
+                identityInfo.classList.add('animate');
+                
+                // 添加矩阵扫描线效果
+                const scanLine = document.createElement('div');
+                scanLine.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 2px;
+                    background: var(--matrix-green);
+                    opacity: 0.5;
+                    z-index: 1;
+                    box-shadow: 0 0 10px var(--matrix-green);
+                `;
+                identitySection.querySelector('.identity-content').appendChild(scanLine);
+                
+                // 动画扫描线
+                let position = 0;
+                const scanInterval = setInterval(() => {
+                    position += 2;
+                    scanLine.style.top = position + 'px';
+                    
+                    if (position > identitySection.querySelector('.identity-content').offsetHeight) {
+                        clearInterval(scanInterval);
+                        scanLine.remove();
+                    }
+                }, 10);
+            }, 300);
         }, 500);
     });
     
     setTimeout(() => {
         typeText('#skills-intro', 'Analyzing skill matrix... Processing data...', 60, function() {
             setTimeout(() => {
-                document.getElementById('skills-section').classList.remove('hidden');
+                const skillsSection = document.getElementById('skills-section');
+                skillsSection.classList.remove('hidden');
+                // 触发技能卡片动画
+                const skillCategories = skillsSection.querySelectorAll('.skill-category');
+                skillCategories.forEach((category, index) => {
+                    setTimeout(() => {
+                        category.classList.add('animate');
+                    }, index * 200);
+                });
                 animateSkillBars();
             }, 500);
         });
@@ -30,7 +79,15 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         typeText('#projects-intro', 'Loading personal interests... Analyzing patterns...', 60, function() {
             setTimeout(() => {
-                document.getElementById('projects-section').classList.remove('hidden');
+                const projectsSection = document.getElementById('projects-section');
+                projectsSection.classList.remove('hidden');
+                // 触发项目卡片动画
+                const projectCards = projectsSection.querySelectorAll('.project-card');
+                projectCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('animate');
+                    }, index * 200);
+                });
             }, 500);
         });
     }, 5000);
@@ -42,69 +99,75 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 500);
         });
     }, 7500);
-});
+}
 
 // 初始化矩阵加载动画
 function initMatrixLoader() {
-    // 检查是否是首次访问
-    if (!sessionStorage.getItem('matrixEntered')) {
-        // 显示加载页面
-        const matrixLoader = document.getElementById('matrixLoader');
-        const terminal = document.getElementById('terminal');
-        const redPill = document.getElementById('redPill');
-        const bluePill = document.getElementById('bluePill');
-        const progressFill = document.getElementById('progressFill');
-        const progressBar = document.getElementById('progressBar');
-        const matrixCodeContainer = document.getElementById('matrixCodeContainer');
-        
-        // 使用相同的数字雨效果
-        createMatrixRainForLoader(matrixCodeContainer);
-        
-        // 隐藏进度条
-        progressBar.classList.remove('active');
-        
-        // 红蓝药丸效果
-        redPill.addEventListener('click', function() {
-            // 添加选中效果
-            redPill.classList.add('selected');
-            bluePill.classList.add('disabled');
-            document.querySelector('.choice-text').style.opacity = '0.5';
-            
-            setTimeout(() => {
-                startMatrixLoading(progressFill, function() {
-                    matrixLoader.classList.add('hidden');
-                    setTimeout(() => {
-                        terminal.classList.add('visible');
-                    }, 500);
-                    
-                    // 设置会话存储，以便刷新页面时不再显示
-                    sessionStorage.setItem('matrixEntered', 'true');
-                });
-            }, 500);
-        });
-        
-        bluePill.addEventListener('click', function() {
-            // 添加选中效果
-            bluePill.classList.add('selected');
-            redPill.classList.add('disabled');
-            document.querySelector('.choice-text').style.opacity = '0.5';
-            
-            // 使用蓝色主题的进度条
-            progressFill.style.background = 'linear-gradient(90deg, #0066ff, #0099ff)';
-            progressFill.style.boxShadow = '0 0 10px rgba(0, 102, 255, 0.5)';
-            
-            setTimeout(() => {
-                startMatrixLoading(progressFill, function() {
-                    // 重定向到其他页面
-                    window.location.href = 'https://blog.cuijianzhuang.com/';
-                }, true);
-            }, 500);
-        });
-    } else {
-        // 如果已访问过，直接隐藏加载器并显示终端
-        document.getElementById('matrixLoader').classList.add('hidden');
-        document.getElementById('terminal').classList.add('visible');
+    const matrixLoader = document.getElementById('matrixLoader');
+    const terminal = document.getElementById('terminal');
+    const redPill = document.getElementById('redPill');
+    const bluePill = document.getElementById('bluePill');
+    const progressFill = document.getElementById('progressFill');
+    const progressBar = document.getElementById('progressBar');
+    const matrixCodeContainer = document.getElementById('matrixCodeContainer');
+    
+    // 检查是否是刷新页面
+    if (sessionStorage.getItem('matrixEntered')) {
+        // 如果是刷新页面，直接隐藏加载器
+        matrixLoader.style.display = 'none';
+        // 添加终端的显示动画
+        setTimeout(() => {
+            terminal.classList.add('visible');
+            // 初始化内容
+            initializeContent();
+            // 等待MetingJS加载完成后播放音乐
+            waitForMetingJS().then(() => {
+                const ap = document.querySelector('meting-js').aplayer;
+                if (ap) {
+                    ap.volume(0.2, true);
+                    ap.play();
+                }
+            });
+        }, 500);
+        return;
     }
+
+    // 首次访问的逻辑
+    createMatrixRainForLoader(matrixCodeContainer);
+    progressBar.classList.remove('active');
+    
+    // 红蓝药丸效果
+    redPill.addEventListener('click', function() {
+        redPill.classList.add('selected');
+        bluePill.classList.add('disabled');
+        document.querySelector('.choice-text').style.opacity = '0.5';
+        
+        setTimeout(() => {
+            startMatrixLoading(progressFill, function() {
+                matrixLoader.classList.add('hidden');
+                setTimeout(() => {
+                    terminal.classList.add('visible');
+                    // 设置会话存储，以便刷新页面时不再显示选择界面
+                    sessionStorage.setItem('matrixEntered', 'true');
+                }, 500);
+            });
+        }, 500);
+    });
+    
+    bluePill.addEventListener('click', function() {
+        bluePill.classList.add('selected');
+        redPill.classList.add('disabled');
+        document.querySelector('.choice-text').style.opacity = '0.5';
+        
+        progressFill.style.background = 'linear-gradient(90deg, #0066ff, #0099ff)';
+        progressFill.style.boxShadow = '0 0 10px rgba(0, 102, 255, 0.5)';
+        
+        setTimeout(() => {
+            startMatrixLoading(progressFill, function() {
+                window.location.href = 'https://blog.cuijianzhuang.com/';
+            }, true);
+        }, 500);
+    });
 }
 
 // 为加载页面创建相同的矩阵数字雨效果
@@ -249,22 +312,56 @@ function startMatrixLoading(progressBar, callback, isBlue = false) {
         progress += 1;
         progressBar.style.width = `${progress}%`;
         
-        // 阶段性更新文本
+        // 每20%更新一次加载文本
         if (progress % 20 === 0 && currentStep < loadingSteps.length - 1) {
             currentStep++;
             loadingText.textContent = loadingSteps[currentStep];
+            loadingText.classList.add('glitch');
+            setTimeout(() => loadingText.classList.remove('glitch'), 1000);
         }
         
         if (progress >= 100) {
             clearInterval(interval);
-            loadingText.textContent = isBlue ? "RETURNING TO REALITY" : "WELCOME TO THE MATRIX";
+            loadingText.textContent = isBlue ? "Goodbye..." : "Access Granted";
             loadingText.classList.add('glitch');
             
             setTimeout(() => {
-                if (callback) callback();
+                if (callback) {
+                    callback();
+                    if (!isBlue) {
+                        // 在回调完成后初始化内容和音乐
+                        setTimeout(() => {
+                            initializeContent();
+                            // 等待MetingJS完全加载
+                            waitForMetingJS().then(() => {
+                                const ap = document.querySelector('meting-js').aplayer;
+                                if (ap) {
+                                    // 设置音量并播放
+                                    ap.volume(0.2, true);
+                                    ap.play();
+                                }
+                            });
+                        }, 1000);
+                    }
+                }
             }, 1000);
         }
-    }, 30);
+    }, 50);
+}
+
+// 等待MetingJS加载完成
+function waitForMetingJS() {
+    return new Promise((resolve) => {
+        const checkMetingJS = () => {
+            const metingJS = document.querySelector('meting-js');
+            if (metingJS && metingJS.aplayer) {
+                resolve();
+            } else {
+                setTimeout(checkMetingJS, 100);
+            }
+        };
+        checkMetingJS();
+    });
 }
 
 // 禁止开发者工具
@@ -396,12 +493,12 @@ function typeText(selector, text, speed, callback) {
 // Animate skill bars
 function animateSkillBars() {
     const skillBars = document.querySelectorAll('.skill-bar span');
-    skillBars.forEach(bar => {
+    skillBars.forEach((bar, index) => {
         const width = bar.style.width;
         bar.style.width = '0';
         setTimeout(() => {
             bar.style.width = width;
-        }, 300);
+        }, 300 + index * 100);
     });
 }
 
