@@ -494,24 +494,25 @@ body {
 }
 
 .matrix-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
     position: relative;
-    z-index: 10001;
-    text-align: center;
-    margin-top: 20px;
+    z-index: 1;
 }
 
 .loading-text {
-    color: #00ff41;
-    font-size: 1.8rem;
-    margin: 20px 0;
-    letter-spacing: 2px;
-    animation: pulse 1.5s infinite;
+    margin-bottom: 20px;
 }
 
 .loading-pills {
+    margin: 40px 0;
     display: flex;
     justify-content: center;
-    margin-top: 40px;
+    gap: 40px;
 }
 
 .pill {
@@ -548,21 +549,46 @@ body {
 }
 
 .progress-bar {
-    width: 300px;
+    width: 400px;
     height: 6px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 3px;
-    margin-top: 30px;
+    margin: 40px auto;
     overflow: hidden;
     position: relative;
 }
 
 .progress-fill {
     height: 100%;
-    background-color: #00ff41;
+    background: linear-gradient(90deg, #00ff41, #00ff41);
     width: 0%;
     border-radius: 3px;
     transition: width 0.1s linear;
+    position: relative;
+}
+
+.progress-fill:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        transparent,
+        rgba(0, 255, 65, 0.5),
+        transparent
+    );
+    animation: progressGlow 2s linear infinite;
+}
+
+@keyframes progressGlow {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 @keyframes pulse {
@@ -767,5 +793,93 @@ body {
     100% {
         transform: scaleY(1);
         opacity: 1;
+    }
+}
+
+/* 选择文案样式 */
+.choice-text {
+    color: #00ff41;
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 30px auto;
+    text-align: center;
+    line-height: 1.6;
+    font-family: 'Courier New', monospace;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s ease forwards 0.5s;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 增强药丸按钮的视觉效果 */
+.loading-pills {
+    margin-top: 40px;
+}
+
+.pill {
+    width: 150px;
+    height: 70px;
+    margin: 0 20px;
+    border-radius: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.4rem;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transform: scale(1);
+    transition: all 0.3s ease;
+    text-shadow: 0 0 10px currentColor;
+    box-shadow: 0 0 20px currentColor;
+    position: relative;
+    overflow: hidden;
+}
+
+.pill:before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 40px;
+    background: linear-gradient(45deg, currentColor, transparent);
+    z-index: -1;
+    animation: borderRotate 4s linear infinite;
+}
+
+.red-pill {
+    border: 2px solid #ff0033;
+    color: #ff0033;
+    background-color: rgba(255, 0, 51, 0.1);
+}
+
+.blue-pill {
+    border: 2px solid #0066ff;
+    color: #0066ff;
+    background-color: rgba(0, 102, 255, 0.1);
+}
+
+.pill:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px currentColor;
+}
+
+@keyframes borderRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
     }
 }
