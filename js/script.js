@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Matrix digital rain background effect
     createMatrixRain();
+    
+    // 尝试初始化音乐播放器
+    initAudioPlayer();
 });
 
 // 初始化所有动画和内容
@@ -115,14 +118,7 @@ function initMatrixLoader() {
             terminal.classList.add('visible');
             // 初始化内容
             initializeContent();
-            // 等待MetingJS加载完成后播放音乐
-            waitForMetingJS().then(() => {
-                const ap = document.querySelector('meting-js').aplayer;
-                if (ap) {
-                    ap.volume(0.2, true);
-                    ap.play();
-                }
-            });
+            // 不需要重复调用initAudioPlayer，因为已经在DOMContentLoaded中调用过了
         }, 500);
         return;
     }
@@ -327,15 +323,8 @@ function startMatrixLoading(progressBar, callback, isBlue = false) {
                         // 在回调完成后初始化内容和音乐
                         setTimeout(() => {
                             initializeContent();
-                            // 等待MetingJS完全加载
-                            waitForMetingJS().then(() => {
-                                const ap = document.querySelector('meting-js').aplayer;
-                                if (ap) {
-                                    // 设置音量并播放
-                                    ap.volume(0.2, true);
-                                    ap.play();
-                                }
-                            });
+                            // 设置音乐状态为启用
+                            localStorage.setItem('matrixMusicEnabled', 'true');
                         }, 1000);
                     }
                 }
@@ -348,9 +337,9 @@ function startMatrixLoading(progressBar, callback, isBlue = false) {
 function waitForMetingJS() {
     return new Promise((resolve) => {
         const checkMetingJS = () => {
-            const metingJS = document.querySelector('meting-js');
-            if (metingJS && metingJS.aplayer) {
-                resolve();
+            const meting = document.querySelector('meting-js');
+            if (meting && meting.aplayer) {
+                resolve(meting.aplayer);
             } else {
                 setTimeout(checkMetingJS, 100);
             }
@@ -829,4 +818,56 @@ function smoothScrollToTop() {
         top: 0,
         behavior: 'smooth'
     });
+}
+
+// 初始化音频播放器
+function initAudioPlayer() {
+    // 检查是否已经存储了音乐播放状态
+    const shouldPlayMusic = localStorage.getItem('matrixMusicEnabled') !== 'false';
+    
+    if (shouldPlayMusic) {
+        waitForMetingJS().then((ap) => {
+            if (ap) {
+                // 设置音量
+                ap.volume(0.2, true);
+                
+                // 尝试播放
+                const playMusic = function() {
+                    const playPromise = ap.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.log('自动播放失败，等待用户交互: ', error);
+                        });
+                    }
+                };
+                
+                // 立即尝试播放
+                playMusic();
+                
+                // 同时监听用户交互，在首次交互时播放
+                const userInteraction = function() {
+                    playMusic();
+                    // 移除事件监听器
+                    document.removeEventListener('click', userInteraction);
+                    document.removeEventListener('keydown', userInteraction);
+                    document.removeEventListener('touchstart', userInteraction);
+                };
+                
+                document.addEventListener('click', userInteraction);
+                document.addEventListener('keydown', userInteraction);
+                document.addEventListener('touchstart', userInteraction);
+                
+                // 监听播放状态改变
+                ap.on('play', function() {
+                    localStorage.setItem('matrixMusicEnabled', 'true');
+                });
+                
+                ap.on('pause', function() {
+                    localStorage.setItem('matrixMusicEnabled', 'false');
+                });
+            }
+        }).catch(err => {
+            console.error('播放器加载失败:', err);
+        });
+    }
 } 
