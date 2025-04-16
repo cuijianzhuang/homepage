@@ -135,11 +135,21 @@ function initMatrixLoader() {
     
     // 红蓝药丸效果
     redPill.addEventListener('click', function() {
+        // 播放红色药丸选择音效
+        const redPillSound = new Audio('/sounds/mixkit-sci-fi-click-900.wav');
+        redPillSound.volume = 0.6;
+        redPillSound.play().catch(e => console.log('无法播放音效:', e));
+        
         redPill.classList.add('selected');
         bluePill.classList.add('disabled');
         document.querySelector('.choice-text').style.opacity = '0.5';
         
         setTimeout(() => {
+            // 播放进入矩阵音效
+            const enterMatrixSound = new Audio('/sounds/mixkit-technological-futuristic-hum-2133.wav');
+            enterMatrixSound.volume = 0.4;
+            enterMatrixSound.play().catch(e => console.log('无法播放音效:', e));
+            
             startMatrixLoading(progressFill, function() {
                 matrixLoader.classList.add('hidden');
                 setTimeout(() => {
@@ -152,6 +162,11 @@ function initMatrixLoader() {
     });
     
     bluePill.addEventListener('click', function() {
+        // 播放蓝色药丸选择音效
+        const bluePillSound = new Audio('/sounds/mixkit-technological-futuristic-hum-2133.wav');
+        bluePillSound.volume = 0.6;
+        bluePillSound.play().catch(e => console.log('无法播放音效:', e));
+        
         bluePill.classList.add('selected');
         redPill.classList.add('disabled');
         document.querySelector('.choice-text').style.opacity = '0.5';
@@ -160,6 +175,11 @@ function initMatrixLoader() {
         progressFill.style.boxShadow = '0 0 10px rgba(0, 102, 255, 0.5)';
         
         setTimeout(() => {
+            // 播放退出系统音效
+            const exitSystemSound = new Audio('/sounds/mixkit-arcade-retro-game-over-213.wav');
+            exitSystemSound.volume = 0.4;
+            exitSystemSound.play().catch(e => console.log('无法播放音效:', e));
+            
             startMatrixLoading(progressFill, function() {
                 window.location.href = 'https://blog.cuijianzhuang.com/';
             }, true);
@@ -305,6 +325,20 @@ function startMatrixLoading(progressBar, callback, isBlue = false) {
     loadingText.textContent = loadingSteps[currentStep];
     loadingText.classList.remove('glitch');
     
+    // 加载步骤音效
+    const stepSounds = [
+        new Audio('/sounds/mixkit-sci-fi-click-900.wav'),
+        new Audio('/sounds/mixkit-futuristic-mechanical-technology-lock-sound-2610.wav'),
+        new Audio('/sounds/mixkit-fast-sci-fi-bleep-903.wav'),
+        new Audio('/sounds/mixkit-deep-cinematic-subtle-hit-632.wav'),
+        new Audio('/sounds/mixkit-digital-quick-tone-2865.wav')
+    ];
+    
+    for (let sound of stepSounds) {
+        sound.volume = 0.3;
+        sound.preload = 'auto';
+    }
+    
     const interval = setInterval(() => {
         progress += 1;
         progressBar.style.width = `${progress}%`;
@@ -314,13 +348,31 @@ function startMatrixLoading(progressBar, callback, isBlue = false) {
             currentStep++;
             loadingText.textContent = loadingSteps[currentStep];
             loadingText.classList.add('glitch');
+            
+            // 播放当前步骤音效
+            if (currentStep < stepSounds.length) {
+                stepSounds[currentStep].play().catch(e => console.log('无法播放音效:', e));
+            }
+            
             setTimeout(() => loadingText.classList.remove('glitch'), 1000);
+        }
+        
+        // 在加载过程中随机添加小的故障音效
+        if (progress % 10 === 0 && Math.random() > 0.7) {
+            const glitchSound = new Audio('/sounds/mixkit-fast-small-sweep-transition-166.wav');
+            glitchSound.volume = 0.2;
+            glitchSound.play().catch(e => console.log('无法播放音效:', e));
         }
         
         if (progress >= 100) {
             clearInterval(interval);
             loadingText.textContent = isBlue ? "Goodbye..." : "Access Granted";
             loadingText.classList.add('glitch');
+            
+            // 播放完成音效
+            const completeSound = new Audio(isBlue ? '/sounds/mixkit-negative-tone-interface-tap-2569.wav' : '/sounds/mixkit-positive-interface-beep-221.wav');
+            completeSound.volume = 0.4;
+            completeSound.play().catch(e => console.log('无法播放音效:', e));
             
             setTimeout(() => {
                 if (callback) {
@@ -1235,7 +1287,7 @@ function placeCaretAtEnd(element) {
 // 退出矩阵的特效序列
 function startExitSequence() {
     // 播放断开连接音效
-    const disconnectSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-electronic-retro-block-hit-2185.mp3');
+    const disconnectSound = new Audio('/sounds/mixkit-electronic-retro-block-hit-2185.wav');
     disconnectSound.volume = 0.5;
     disconnectSound.play().catch(e => console.log('无法播放音效:', e));
     
@@ -1349,7 +1401,7 @@ function startExitSequence() {
             }, 300);
             
             // 播放故障音效
-            const glitchSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-arcade-retro-game-over-213.mp3');
+            const glitchSound = new Audio('/sounds/mixkit-arcade-space-shooter-dead-notification-272.wav');
             glitchSound.volume = 0.3;
             glitchSound.play().catch(e => console.log('无法播放音效:', e));
             
@@ -1376,7 +1428,7 @@ function completeExitSequence() {
     
     if (terminal) {
         // 播放关机音效
-        const shutdownSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-electronic-retro-block-hit-2185.mp3');
+        const shutdownSound = new Audio('/sounds/mixkit-arcade-retro-game-over-213.wav');
         shutdownSound.volume = 0.6;
         shutdownSound.play().catch(e => console.log('无法播放音效:', e));
         
@@ -1501,7 +1553,7 @@ function completeExitSequence() {
                     clearInterval(rainInterval);
                     
                     // 播放过渡音效
-                    const transitionSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-sci-fi-positive-notification-266.mp3');
+                    const transitionSound = new Audio('/sounds/mixkit-sci-fi-confirmation-914.wav');
                     transitionSound.volume = 0.4;
                     transitionSound.play().catch(e => console.log('无法播放音效:', e));
                     
