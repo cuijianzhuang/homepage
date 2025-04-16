@@ -177,9 +177,12 @@ body {
     padding: 20px;
     min-height: 60vh;
     max-height: 80vh;
+    height: auto;
     overflow-y: auto;
     line-height: 1.5;
     font-size: 18px;
+    position: relative;
+    scroll-behavior: smooth;
 }
 
 .terminal-content::-webkit-scrollbar {
@@ -822,6 +825,8 @@ body {
     
     .terminal-content {
         font-size: 16px;
+        max-height: 70vh;
+        padding: 15px;
     }
 }
 
@@ -1021,13 +1026,38 @@ body {
 
 /* 技能条点击效果 */
 @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    0% { 
+        transform: scale(1); 
+        box-shadow: 0 0 0 rgba(0, 255, 65, 0);
+    }
+    50% { 
+        transform: scale(1.02); 
+        box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+    }
+    100% { 
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(0, 255, 65, 0);
+    }
 }
 
 .pulse {
     animation: pulse 1s ease;
+    position: relative;
+    z-index: 1;
+}
+
+/* 添加滚动目标高亮效果 */
+.section-highlight {
+    animation: sectionHighlight 2s ease-out;
+}
+
+@keyframes sectionHighlight {
+    0% {
+        background: rgba(0, 255, 65, 0.2);
+    }
+    100% {
+        background: transparent;
+    }
 }
 
 /* 帮助模态框样式 */
@@ -1575,4 +1605,500 @@ body {
 .scroll-top:hover:after {
     opacity: 1;
     animation: borderRotate 2s linear infinite;
+}
+
+/* 命令行输入样式 */
+.command-line-container {
+    margin-top: 30px;
+}
+
+.command-line {
+    display: flex;
+    align-items: center;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.command-input {
+    display: inline-block;
+    min-width: 10px;
+    outline: none;
+    color: var(--text-color);
+    caret-color: transparent; /* 隐藏默认光标 */
+    margin-left: 8px;
+}
+
+.cursor-blink {
+    display: inline-block;
+    width: 8px;
+    height: 18px;
+    background-color: var(--matrix-green);
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+    vertical-align: middle;
+}
+
+.command-output {
+    margin-top: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.command-output::-webkit-scrollbar {
+    width: 5px;
+}
+
+.command-output::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.command-output::-webkit-scrollbar-thumb {
+    background: var(--matrix-dark-green);
+    border-radius: 3px;
+}
+
+.previous-command {
+    margin-bottom: 10px;
+    font-family: 'VT323', monospace;
+    color: var(--text-color);
+}
+
+.command-response {
+    margin: 10px 0 20px;
+    padding-left: 15px;
+    border-left: 2px solid var(--matrix-dark-green);
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 命令帮助样式 */
+.command-help {
+    background: rgba(0, 20, 0, 0.3);
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid var(--matrix-dark-green);
+}
+
+.command-help ul {
+    list-style-type: none;
+    padding-left: 10px;
+    margin: 10px 0;
+}
+
+.command-help li {
+    margin: 5px 0;
+    position: relative;
+    padding-left: 20px;
+}
+
+.command-help li:before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--matrix-green);
+}
+
+.command-help .hint {
+    font-style: italic;
+    margin-top: 15px;
+    color: var(--matrix-green);
+    opacity: 0.8;
+}
+
+/* 移动设备命令行样式优化 */
+@media (max-width: 768px) {
+    .command-line {
+        font-size: 16px;
+    }
+    
+    .command-output {
+        max-height: 300px;
+    }
+    
+    .command-help li {
+        font-size: 14px;
+    }
+}
+
+/* 退出矩阵特效样式 */
+.exit-sequence {
+    background: rgba(0, 20, 0, 0.4);
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid var(--matrix-dark-green);
+    position: relative;
+    overflow: hidden;
+}
+
+.exit-matrix-rain {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    z-index: 0;
+    opacity: 0.7;
+}
+
+.exit-progress {
+    height: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--matrix-dark-green);
+    margin: 15px 0;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+.exit-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--matrix-green);
+    transition: width 0.2s ease;
+    position: relative;
+}
+
+.exit-progress-fill:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    animation: scanline 1s linear infinite;
+}
+
+/* 进度条状态样式 */
+.exit-progress-fill.unstable {
+    background: linear-gradient(90deg, #00ff41, #d9ff00);
+    animation: progressFlicker 0.5s ease infinite;
+}
+
+.exit-progress-fill.critical {
+    background: linear-gradient(90deg, #d9ff00, #ff3300);
+    animation: progressFlicker 0.2s ease infinite;
+}
+
+@keyframes progressFlicker {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* 消息更新动画 */
+.message-update {
+    animation: messageGlitch 0.3s ease;
+}
+
+@keyframes messageGlitch {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    20% {
+        transform: translateX(-5px);
+        opacity: 0.8;
+    }
+    40% {
+        transform: translateX(5px);
+        opacity: 0.9;
+    }
+    60% {
+        transform: translateX(-2px);
+        opacity: 0.7;
+    }
+    80% {
+        transform: translateX(2px);
+        opacity: 0.9;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* 故障效果 */
+.minor-glitch {
+    animation: minorGlitch 0.2s ease;
+    position: relative;
+}
+
+.major-glitch {
+    animation: majorGlitch 0.3s ease;
+    position: relative;
+}
+
+@keyframes minorGlitch {
+    0% {
+        transform: translate(0);
+        filter: none;
+    }
+    25% {
+        transform: translateX(-5px);
+        filter: hue-rotate(90deg);
+    }
+    50% {
+        transform: translateY(3px);
+        filter: none;
+    }
+    75% {
+        transform: translateX(5px);
+        filter: brightness(1.5) contrast(1.2);
+    }
+    100% {
+        transform: translate(0);
+        filter: none;
+    }
+}
+
+@keyframes majorGlitch {
+    0% {
+        transform: translate(0);
+        filter: none;
+    }
+    20% {
+        transform: translate(-10px, 10px);
+        filter: hue-rotate(180deg);
+    }
+    40% {
+        transform: translate(10px, -10px);
+        filter: invert(0.5);
+    }
+    60% {
+        transform: translate(-5px, 5px);
+        filter: saturate(2) contrast(1.5);
+    }
+    80% {
+        transform: translate(5px, -5px);
+        filter: hue-rotate(-90deg) brightness(1.5);
+    }
+    100% {
+        transform: translate(0);
+        filter: none;
+    }
+}
+
+.exit-glitch {
+    animation: exitGlitch 0.3s ease infinite;
+}
+
+@keyframes exitGlitch {
+    0% {
+        transform: translate(0);
+        opacity: 1;
+    }
+    20% {
+        transform: translate(-10px, 10px);
+        opacity: 0.8;
+    }
+    40% {
+        transform: translate(10px, -10px);
+        opacity: 0.9;
+    }
+    60% {
+        transform: translate(-5px, 5px);
+        opacity: 0.7;
+    }
+    80% {
+        transform: translate(5px, -5px);
+        opacity: 0.9;
+    }
+    100% {
+        transform: translate(0);
+        opacity: 1;
+    }
+}
+
+/* 屏幕收缩效果 */
+.exit-shrink {
+    animation: shrinkEffect 1.5s forwards;
+}
+
+@keyframes shrinkEffect {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    70% {
+        transform: scale(0.95);
+        opacity: 0.8;
+        filter: brightness(1.2) contrast(1.2);
+    }
+    100% {
+        transform: scale(0.1);
+        opacity: 0;
+        filter: brightness(2) contrast(2);
+    }
+}
+
+/* CRT关机效果 */
+.crt-off {
+    position: relative;
+    overflow: hidden;
+}
+
+.crt-off:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: white;
+    animation: crtOff 0.5s ease-out forwards;
+}
+
+@keyframes crtOff {
+    0% {
+        top: 50%;
+        height: 2px;
+        opacity: 1;
+    }
+    100% {
+        top: 0;
+        height: 100%;
+        opacity: 0;
+    }
+}
+
+.exit-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    z-index: 10000;
+    opacity: 0;
+    animation: fadeInOverlay 1.5s forwards;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+@keyframes fadeInOverlay {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.exit-overlay-rain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.exit-message {
+    color: var(--matrix-green);
+    font-size: 24px;
+    text-align: center;
+    font-family: 'VT323', monospace;
+    opacity: 0;
+    animation: fadeInMessage 1s forwards 0.5s;
+    text-shadow: 0 0 10px var(--matrix-green);
+    position: relative;
+    z-index: 1;
+}
+
+.exit-message p {
+    margin: 15px 0;
+    animation: typewriter 1s steps(40) forwards;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 0;
+}
+
+.exit-message p:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.exit-message p:nth-child(2) {
+    animation-delay: 1s;
+}
+
+@keyframes fadeInMessage {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes typewriter {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+/* 融化效果覆盖层 */
+.melt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, 
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 255, 65, 0.1) 50%,
+        rgba(0, 0, 0, 1) 100%
+    );
+    z-index: 10001;
+    pointer-events: none;
+    animation: meltAnimation 3s forwards;
+}
+
+@keyframes meltAnimation {
+    0% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 扫描线动画 */
+@keyframes scanline {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
 }
