@@ -1170,9 +1170,11 @@ function processCommand(command) {
             </div>
         `;
     } else if (cmd === 'exit') {
-        // 退出矩阵
-        response = `
-            <div class="exit-sequence">
+        // 退出矩阵 - 创建全屏覆盖层
+        const fullscreenExit = document.createElement('div');
+        fullscreenExit.className = 'exit-fullscreen-overlay';
+        fullscreenExit.innerHTML = `
+            <div class="exit-sequence fullscreen">
                 <p>正在断开神经连接...</p>
                 <div class="exit-progress">
                     <div class="exit-progress-fill"></div>
@@ -1180,14 +1182,19 @@ function processCommand(command) {
             </div>
         `;
         
-        // 输出命令响应
-        outputCommandResponse(response);
+        document.body.appendChild(fullscreenExit);
+        
+        // 添加淡入效果
+        setTimeout(() => {
+            fullscreenExit.classList.add('active');
+        }, 100);
         
         // 启动退出矩阵的特效
         setTimeout(() => {
-            startExitSequence();
+            startExitSequence(fullscreenExit);
         }, 500);
         
+        // 不在命令输出区显示
         return;
     } else {
         // 未知命令
@@ -1285,22 +1292,22 @@ function placeCaretAtEnd(element) {
 }
 
 // 退出矩阵的特效序列
-function startExitSequence() {
+function startExitSequence(overlay) {
     // 播放断开连接音效
     const disconnectSound = new Audio('/sounds/mixkit-electronic-retro-block-hit-2185.wav');
     disconnectSound.volume = 0.5;
     disconnectSound.play().catch(e => console.log('无法播放音效:', e));
     
     // 获取进度条元素
-    const progressFill = document.querySelector('.exit-progress-fill');
+    const exitSequence = overlay.querySelector('.exit-sequence');
+    const progressFill = overlay.querySelector('.exit-progress-fill');
     const terminalContent = document.querySelector('.terminal-content');
-    const exitSequence = document.querySelector('.exit-sequence');
     
     // 添加数字雨动画到退出序列
     const miniRain = document.createElement('canvas');
     miniRain.className = 'exit-matrix-rain';
     miniRain.width = exitSequence.offsetWidth;
-    miniRain.height = 100;
+    miniRain.height = window.innerHeight * 0.6; // 更大的高度
     exitSequence.appendChild(miniRain);
     
     // 创建数字雨效果
@@ -1330,6 +1337,28 @@ function startExitSequence() {
     
     const statusElement = exitSequence.querySelector('p');
     let currentMessage = 0;
+    
+    // 创建系统状态指示板
+    const statusBoard = document.createElement('div');
+    statusBoard.className = 'exit-status-board';
+    exitSequence.appendChild(statusBoard);
+    
+    // 初始化状态板
+    const updateStatusBoard = () => {
+        statusBoard.innerHTML = '';
+        statusMessages.forEach((msg, idx) => {
+            const statusItem = document.createElement('div');
+            statusItem.className = 'status-item';
+            statusItem.innerHTML = `
+                <span class="status-indicator ${idx <= currentMessage ? 'active' : ''}"></span>
+                <span class="status-text ${idx <= currentMessage ? 'active' : ''}">${msg}</span>
+                <span class="status-detail">${idx <= currentMessage ? '完成' : '等待中'}</span>
+            `;
+            statusBoard.appendChild(statusItem);
+        });
+    };
+    
+    updateStatusBoard();
     
     const interval = setInterval(() => {
         // 更新进度条
@@ -1362,6 +1391,18 @@ function startExitSequence() {
             currentMessage++;
             statusElement.textContent = statusMessages[currentMessage];
             statusElement.classList.add('message-update');
+            
+            // 更新状态板
+            updateStatusBoard();
+            
+            // 添加打字机效果
+            for (let i = 0; i <= currentMessage; i++) {
+                const statusItem = statusBoard.children[i];
+                if (i === currentMessage) {
+                    statusItem.classList.add('typing');
+                }
+            }
+            
             setTimeout(() => {
                 statusElement.classList.remove('message-update');
             }, 300);
@@ -1374,9 +1415,9 @@ function startExitSequence() {
             
             // 添加屏幕故障效果
             glitchInterval = setInterval(() => {
-                terminalContent.classList.add('minor-glitch');
+                overlay.classList.add('minor-glitch');
                 setTimeout(() => {
-                    terminalContent.classList.remove('minor-glitch');
+                    overlay.classList.remove('minor-glitch');
                 }, 100);
             }, 500);
             
@@ -1394,9 +1435,9 @@ function startExitSequence() {
             
             // 添加更严重的屏幕故障效果
             glitchInterval = setInterval(() => {
-                terminalContent.classList.add('major-glitch');
+                overlay.classList.add('major-glitch');
                 setTimeout(() => {
-                    terminalContent.classList.remove('major-glitch');
+                    overlay.classList.remove('major-glitch');
                 }, 150);
             }, 300);
             
@@ -1415,159 +1456,161 @@ function startExitSequence() {
         if (progress >= 100) {
             clearInterval(interval);
             // 完成退出序列
-            completeExitSequence();
+            completeExitSequence(overlay);
         }
     }, 50);
 }
 
 // 完成退出矩阵的特效
-function completeExitSequence() {
+function completeExitSequence(overlay) {
     // 添加屏幕特效
     const terminal = document.querySelector('.terminal');
-    const terminalContent = document.querySelector('.terminal-content');
     
-    if (terminal) {
-        // 播放关机音效
-        const shutdownSound = new Audio('/sounds/mixkit-arcade-retro-game-over-213.wav');
-        shutdownSound.volume = 0.6;
-        shutdownSound.play().catch(e => console.log('无法播放音效:', e));
+    // 播放关机音效
+    const shutdownSound = new Audio('/sounds/mixkit-arcade-retro-game-over-213.wav');
+    shutdownSound.volume = 0.6;
+    shutdownSound.play().catch(e => console.log('无法播放音效:', e));
+    
+    // 添加更强烈的闪烁效果
+    overlay.classList.add('exit-glitch');
+    
+    // 屏幕收缩效果
+    setTimeout(() => {
+        terminal.classList.add('exit-shrink');
         
-        // 添加更强烈的闪烁效果
-        terminal.classList.add('exit-glitch');
+        // 添加全屏闪烁效果
+        const glitchOverlay = document.createElement('div');
+        glitchOverlay.className = 'terminal-glitch-overlay';
+        document.body.appendChild(glitchOverlay);
         
-        // 屏幕收缩效果
-        setTimeout(() => {
-            terminal.classList.add('exit-shrink');
-            
-            // 随机字符闪烁
-            const glitchTexts = document.querySelectorAll('.prompt, .command-response, #commandOutput');
-            glitchTexts.forEach(el => {
-                if (el) {
-                    const originalContent = el.innerHTML;
-                    const glitchInterval = setInterval(() => {
-                        // 随机决定是否替换为乱码
-                        if (Math.random() > 0.5) {
-                            const length = originalContent.length;
-                            let glitchText = '';
-                            for (let i = 0; i < length; i++) {
-                                if (Math.random() > 0.8) {
-                                    glitchText += 'アカサタナハマヤ'[Math.floor(Math.random() * 9)];
-                                } else if (Math.random() > 0.95) {
-                                    glitchText += '01'[Math.floor(Math.random() * 2)];
-                                } else {
-                                    glitchText += originalContent[i] || '';
-                                }
+        // 随机字符闪烁
+        const glitchTexts = document.querySelectorAll('.prompt, .command-response, #commandOutput');
+        glitchTexts.forEach(el => {
+            if (el) {
+                const originalContent = el.innerHTML;
+                const glitchInterval = setInterval(() => {
+                    // 随机决定是否替换为乱码
+                    if (Math.random() > 0.5) {
+                        const length = originalContent.length;
+                        let glitchText = '';
+                        for (let i = 0; i < length; i++) {
+                            if (Math.random() > 0.8) {
+                                glitchText += 'アカサタナハマヤ'[Math.floor(Math.random() * 9)];
+                            } else if (Math.random() > 0.95) {
+                                glitchText += '01'[Math.floor(Math.random() * 2)];
+                            } else {
+                                glitchText += originalContent[i] || '';
                             }
-                            el.innerHTML = glitchText;
-                        } else {
-                            el.innerHTML = originalContent;
                         }
-                    }, 100);
-                    
-                    // 1秒后清除乱码效果
-                    setTimeout(() => {
-                        clearInterval(glitchInterval);
-                        el.innerHTML = originalContent;
-                    }, 1000);
-                }
-            });
-        }, 500);
-        
-        // 添加CRT关机效果
-        setTimeout(() => {
-            terminal.classList.add('crt-off');
-        }, 1200);
-        
-        // 添加过渡层
-        setTimeout(() => {
-            const transitionOverlay = document.createElement('div');
-            transitionOverlay.className = 'exit-overlay';
-            document.body.appendChild(transitionOverlay);
-            
-            // 添加数字雨背景
-            const rainCanvas = document.createElement('canvas');
-            rainCanvas.className = 'exit-overlay-rain';
-            rainCanvas.width = window.innerWidth;
-            rainCanvas.height = window.innerHeight;
-            transitionOverlay.appendChild(rainCanvas);
-            
-            // 创建密集的数字雨
-            const ctx = rainCanvas.getContext('2d');
-            const chars = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789';
-            const fontSize = 16;
-            const columns = Math.floor(rainCanvas.width / fontSize);
-            const drops = [];
-            
-            for (let i = 0; i < columns; i++) {
-                drops[i] = Math.floor(Math.random() * -50);
-            }
-            
-            const drawRain = function() {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-                ctx.fillRect(0, 0, rainCanvas.width, rainCanvas.height);
-                
-                ctx.fillStyle = '#00ff41';
-                ctx.font = `${fontSize}px monospace`;
-                
-                for (let i = 0; i < drops.length; i++) {
-                    const char = chars[Math.floor(Math.random() * chars.length)];
-                    const x = i * fontSize;
-                    const y = drops[i] * fontSize;
-                    
-                    // 为部分字符添加发光效果
-                    if (Math.random() > 0.97) {
-                        ctx.fillStyle = '#5cff5c';
-                        ctx.shadowColor = '#00ff41';
-                        ctx.shadowBlur = 10;
+                        el.innerHTML = glitchText;
                     } else {
-                        ctx.fillStyle = '#00ff41';
-                        ctx.shadowBlur = 0;
+                        el.innerHTML = originalContent;
                     }
-                    
-                    ctx.fillText(char, x, y);
-                    
-                    if (drops[i] * fontSize > rainCanvas.height && Math.random() > 0.975) {
-                        drops[i] = 0;
-                    }
-                    
-                    drops[i]++;
-                }
-            };
-            
-            // 启动数字雨动画
-            const rainInterval = setInterval(drawRain, 30);
-            
-            // 模拟断开效果后重定向
-            setTimeout(() => {
-                // 显示最终消息
-                const exitMessage = document.createElement('div');
-                exitMessage.className = 'exit-message';
-                exitMessage.innerHTML = `
-                    <p>神经连接已断开</p>
-                    <p>欢迎回到现实世界...</p>
-                `;
-                transitionOverlay.appendChild(exitMessage);
+                }, 100);
                 
-                // 逐渐减缓数字雨动画
+                // 1秒后清除乱码效果
                 setTimeout(() => {
-                    clearInterval(rainInterval);
-                    
-                    // 播放过渡音效
-                    const transitionSound = new Audio('/sounds/mixkit-sci-fi-confirmation-914.wav');
-                    transitionSound.volume = 0.4;
-                    transitionSound.play().catch(e => console.log('无法播放音效:', e));
-                    
-                    // 添加融化效果
-                    const meltOverlay = document.createElement('div');
-                    meltOverlay.className = 'melt-overlay';
-                    document.body.appendChild(meltOverlay);
-                    
-                    // 3秒后重定向到另一个网页
-                    setTimeout(() => {
-                        window.location.href = 'https://blog.cuijianzhuang.com/';
-                    }, 3000);
-                }, 2000);
-            }, 1500);
+                    clearInterval(glitchInterval);
+                    el.innerHTML = originalContent;
+                }, 1000);
+            }
+        });
+    }, 500);
+    
+    // 添加CRT关机效果
+    setTimeout(() => {
+        overlay.classList.add('crt-off');
+    }, 1200);
+    
+    // 添加过渡层
+    setTimeout(() => {
+        const transitionOverlay = document.createElement('div');
+        transitionOverlay.className = 'exit-overlay';
+        document.body.appendChild(transitionOverlay);
+        
+        // 添加数字雨背景
+        const rainCanvas = document.createElement('canvas');
+        rainCanvas.className = 'exit-overlay-rain';
+        rainCanvas.width = window.innerWidth;
+        rainCanvas.height = window.innerHeight;
+        transitionOverlay.appendChild(rainCanvas);
+        
+        // 创建密集的数字雨
+        const ctx = rainCanvas.getContext('2d');
+        const chars = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789';
+        const fontSize = 16;
+        const columns = Math.floor(rainCanvas.width / fontSize);
+        const drops = [];
+        
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.floor(Math.random() * -50);
+        }
+        
+        const drawRain = function() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, rainCanvas.width, rainCanvas.height);
+            
+            ctx.fillStyle = '#00ff41';
+            ctx.font = `${fontSize}px monospace`;
+            
+            for (let i = 0; i < drops.length; i++) {
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+                
+                // 为部分字符添加发光效果
+                if (Math.random() > 0.97) {
+                    ctx.fillStyle = '#5cff5c';
+                    ctx.shadowColor = '#00ff41';
+                    ctx.shadowBlur = 10;
+                } else {
+                    ctx.fillStyle = '#00ff41';
+                    ctx.shadowBlur = 0;
+                }
+                
+                ctx.fillText(char, x, y);
+                
+                if (drops[i] * fontSize > rainCanvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                
+                drops[i]++;
+            }
+        };
+        
+        // 启动数字雨动画
+        const rainInterval = setInterval(drawRain, 30);
+        
+        // 模拟断开效果后重定向
+        setTimeout(() => {
+            // 显示最终消息
+            const exitMessage = document.createElement('div');
+            exitMessage.className = 'exit-message';
+            exitMessage.innerHTML = `
+                <p>神经连接已断开</p>
+                <p>欢迎回到现实世界...</p>
+            `;
+            transitionOverlay.appendChild(exitMessage);
+            
+            // 逐渐减缓数字雨动画
+            setTimeout(() => {
+                clearInterval(rainInterval);
+                
+                // 播放过渡音效
+                const transitionSound = new Audio('/sounds/mixkit-sci-fi-confirmation-914.wav');
+                transitionSound.volume = 0.4;
+                transitionSound.play().catch(e => console.log('无法播放音效:', e));
+                
+                // 添加融化效果
+                const meltOverlay = document.createElement('div');
+                meltOverlay.className = 'melt-overlay';
+                document.body.appendChild(meltOverlay);
+                
+                // 3秒后重定向到另一个网页
+                setTimeout(() => {
+                    window.location.href = 'https://blog.cuijianzhuang.com/';
+                }, 3000);
+            }, 2000);
         }, 1500);
-    }
+    }, 1500);
 } 
